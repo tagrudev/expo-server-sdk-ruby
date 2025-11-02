@@ -39,6 +39,7 @@ module Exponent
       def initialize(**args)
         @http_client = args[:http_client] || Typhoeus
         @error_builder = ErrorBuilder.new
+        @access_token = args[:access_token] || nil
         # future versions will deprecate this
         @response_handler = args[:response_handler] || ResponseHandler.new
         @gzip             = args[:gzip] == true
@@ -102,8 +103,10 @@ module Exponent
       def headers
         headers = {
           'Content-Type' => 'application/json',
-          'Accept' => 'application/json'
+          'Accept' => 'application/json',
         }
+
+        @access_token && headers.merge!('Authorization' => "Bearer #{@access_token}")
         headers
       end
     end
